@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Passa e Repassa</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style/style.css">
+</head>
+<body>
+
+<div id="app">
+  <section class="screen" id="screen-start">
+    <div class="eyebrow">Passa e Repassa · Quiz de times</div>
+    <h1 class="big" id="startTitle">Quem começa?</h1>
+    <p class="lead">Joguem pedra, papel e tesoura. Quem ganhar responde primeiro. Se não souber em 30 segundos, passa para o outro time.</p>
+    <div class="arena">
+      <div class="panel A" id="panelA">
+        <div class="hand" id="handA"><span class="face" id="faceA">✊</span></div>
+        <input id="inA" value="Time A" maxlength="14" aria-label="Nome do Time A" autocomplete="off">
+      </div>
+      <div class="vs">VS</div>
+      <div class="panel B" id="panelB">
+        <div class="hand" id="handB"><span class="face" id="faceB">✊</span></div>
+        <input id="inB" value="Time B" maxlength="14" aria-label="Nome do Time B" autocomplete="off">
+      </div>
+    </div>
+    <p id="jkMsg" aria-live="polite">&nbsp;</p>
+    <button class="btn primary" id="jkBtn" type="button">Jogar pedra, papel e tesoura</button>
+    <div class="manual">
+      <span>Já jogaram no braço? Quem ganhou:</span>
+      <button class="btn sm a" id="pickA" type="button">Time A</button>
+      <button class="btn sm b" id="pickB" type="button">Time B</button>
+    </div>
+  </section>
+
+  <section class="screen" id="screen-game" hidden>
+    <div class="top">
+      <div class="progress">
+        <div class="pcount" id="pcount">Pergunta 1 de 12</div>
+        <div class="segs" id="segs"></div>
+      </div>
+      <div class="timer" id="timer" role="timer" aria-label="Tempo restante">
+        <svg viewBox="0 0 64 64" aria-hidden="true"><circle class="trk" cx="32" cy="32" r="28"/><circle class="prg" id="ring" cx="32" cy="32" r="28"/></svg>
+        <b id="timerNum">30</b>
+      </div>
+    </div>
+    <div class="mid">
+      <h2 class="qtext" id="qtext"></h2>
+      <div class="opts" id="opts"></div>
+      <div class="dock">
+        <button class="btn sm" id="passBtn" type="button">Passar a vez</button>
+        <span id="resMsg" hidden></span>
+        <button class="btn primary" id="nextBtn" type="button" hidden>Próxima pergunta</button>
+      </div>
+    </div>
+    <footer class="bottom">
+      <div class="team A" id="teamA"><div class="tname"><span class="dot"></span><span id="nameA">Time A</span></div><div class="tscore" id="scoreA">0</div><div class="tag">Respondendo</div></div>
+      <div class="team B" id="teamB"><div class="tname"><span class="dot"></span><span id="nameB">Time B</span></div><div class="tscore" id="scoreB">0</div><div class="tag">Respondendo</div></div>
+    </footer>
+  </section>
+
+  <section class="screen" id="screen-end" hidden>
+    <div class="eyebrow">Fim de jogo</div>
+    <h1 class="big" id="endTitle">Time A venceu!</h1>
+    <div class="final">
+      <div class="team A active"><div class="tname"><span class="dot"></span><span id="endNameA">Time A</span></div><div class="tscore" id="endA">0</div></div>
+      <div class="team B active"><div class="tname"><span class="dot"></span><span id="endNameB">Time B</span></div><div class="tscore" id="endB">0</div></div>
+    </div>
+    <button class="btn primary" id="againBtn" type="button">Jogar de novo</button>
+  </section>
+</div>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="glow"></div>
+<div id="alert"></div>
+<div id="splash" hidden>
+  <div class="veil"></div>
+  <div id="band"><div class="txt"><div id="splashTitle"></div><div id="splashSub"></div></div></div>
+</div>
+<div id="fx"></div>
+<div id="flash" hidden>
+  <div class="inner"><div class="ico" id="flashIco"></div><div class="msg" id="flashMsg"></div></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="script/config.js"></script>
+<script src="script/questions.js"></script>
+<script src="script/config.js"></script>
+<script src="script/script.js"></script>
+
+</body>
+</html>
