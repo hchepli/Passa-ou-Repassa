@@ -8,9 +8,10 @@ const CONFIG = {
   SHUFFLE_QUESTIONS: true, // true = embaralha a ordem das perguntas
   SHUFFLE_OPTIONS: true,    // true = embaralha as alternativas
   ALERT_SECONDS: 10,      // a partir de quantos segundos o timer pisca (alerta sonoro)
+  AUTO_NEXT_SECONDS: 10, 
 
   // Nomes padrão dos times
-  TEAM_A_NAME: 'Merda',
+  TEAM_A_NAME: 'Time A',
   TEAM_B_NAME: 'Time B',
   NAME_MAX_LENGTH: 14,
 

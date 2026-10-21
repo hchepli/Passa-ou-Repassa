@@ -3,7 +3,7 @@ const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const wait = ms => new Promise(r => setTimeout(r, ms));
 const rand = (a, b) => a + Math.random() * (b - a);
-const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const shuffle = arr => { const a = [...arr]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[a[i], a[j]] = [a[j], a[i]]; } return a; };
 const other = t => (t === 'A' ? 'B' : 'A');
 const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (RM) gsap.globalTimeline.timeScale(20);
@@ -33,7 +33,7 @@ const Sound = (() => {
       o.connect(g).connect(c.destination);
       o.start(c.currentTime + start);
       o.stop(c.currentTime + start + dur + 0.05);
-    } catch (e) {}
+    } catch (e) { }
   }
 
   return {
@@ -60,10 +60,10 @@ function stopAlert() {
 
 /* ============ fundo em Three.js ============ */
 const Scene3D = (() => {
-  if (!window.THREE) return { tint() {}, pulse() {} };
+  if (!window.THREE) return { tint() { }, pulse() { } };
   let renderer;
   try { renderer = new THREE.WebGLRenderer({ canvas: $('#bg'), alpha: true, antialias: true }); }
-  catch (e) { return { tint() {}, pulse() {} }; }
+  catch (e) { return { tint() { }, pulse() { } }; }
   renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(55, 1, 0.1, 100);
@@ -101,7 +101,7 @@ const Scene3D = (() => {
     requestAnimationFrame(loop);
   })();
   return {
-    tint(hex) { const c = new THREE.Color(hex); [mat.color, pmat.color].forEach(m => gsap.to(m, { r: c.r, g: c.g, b: c.b, duration: 0.8 })); },
+    tint(hex) { const c = new THREE.Color(hex);[mat.color, pmat.color].forEach(m => gsap.to(m, { r: c.r, g: c.g, b: c.b, duration: 0.8 })); },
     pulse() {
       gsap.fromTo(group.scale, { x: 1.4, y: 1.4, z: 1.4 }, { x: 1, y: 1, z: 1, duration: 1.3, ease: 'power3.out' });
       gsap.fromTo(mat, { opacity: 0.6 }, { opacity: 0.22, duration: 1.3, ease: 'power2.out' });
@@ -281,6 +281,7 @@ function loadQuestion() {
     box.appendChild(b);
   });
   $('#passBtn').hidden = false; $('#resMsg').hidden = true; $('#nextBtn').hidden = true;
+  stopAutoNext();
   $('#nextBtn').textContent = S.q === N - 1 ? 'Ver resultado' : 'Próxima pergunta';
   resetTimerUI();
   gsap.set(['#qtext', '.opt', '.dock'], { opacity: 0 });
@@ -393,10 +394,40 @@ function finish(winner) {
   }
   gsap.fromTo('#resMsg, #nextBtn', { y: 14, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, stagger: 0.1, delay: 0.25, clearProps: 'transform,opacity' });
   S.canNext = true;
+  startAutoNext();
+}
+
+/* ---- avanço automático ---- */
+let autoTween = null;
+function startAutoNext() {
+  stopAutoNext();
+  const btn = $('#nextBtn');
+  const base = S.q === S.order.length - 1 ? 'Ver resultado' : 'Próxima pergunta';
+  btn.classList.add('countdown');
+  btn.innerHTML = '<span class="fill"></span><span class="lbl"></span>';
+  const lbl = $('.lbl', btn), fill = $('.fill', btn);
+  const total = CONFIG.AUTO_NEXT_SECONDS;
+  const setLbl = s => { lbl.textContent = `${base} (${s}s)`; };
+  setLbl(total);
+  const o = { t: 0 };
+  autoTween = gsap.to(o, {
+    t: total, duration: total, ease: 'none',
+    onUpdate: () => {
+      gsap.set(fill, { scaleX: o.t / total });
+      setLbl(Math.max(1, Math.ceil(total - o.t)));
+    },
+    onComplete: () => nextQuestion()
+  });
+}
+function stopAutoNext() {
+  if (autoTween) { autoTween.kill(); autoTween = null; }
+  const btn = $('#nextBtn');
+  btn.classList.remove('countdown');
 }
 
 async function nextQuestion() {
   if (S.busy || !S.canNext) return;
+  stopAutoNext();
   S.busy = true; S.canNext = false;
   S.q++;
   if (S.q >= S.order.length) { await endGame(); S.busy = false; return; }
@@ -426,7 +457,7 @@ async function endGame() {
 }
 
 function resetToStart() {
-  stopTimer(); stopAlert();
+  stopTimer(); stopAlert(); stopAutoNext();
   Object.assign(S, { busy: false, canNext: false, locked: true });
   $('#faceA').textContent = $('#faceB').textContent = '✊';
   gsap.set(['#panelA', '#panelB', '.hand'], { clearProps: 'all' });

@@ -55,6 +55,15 @@ button, input { font: inherit; color: inherit; }
 .btn.a:hover:not(:disabled) { border-color: var(--a); color: var(--a); }
 .btn.b:hover:not(:disabled) { border-color: var(--b); color: var(--b); }
 .btn.sm { padding: 8px 16px; font-size: .9rem; color: var(--muted); }
+/* botão "próxima" com preenchimento de contagem */
+.btn.countdown { position: relative; overflow: hidden; isolation: isolate; }
+.btn.countdown .fill {
+  position: absolute; inset: 0; z-index: -1;
+  background: var(--turn);
+  transform: scaleX(0); transform-origin: left center;
+  opacity: .55;
+}
+.btn.countdown .lbl { position: relative; }
 
 /* ---------- start ---------- */
 #screen-start { align-items: center; justify-content: center; text-align: center; gap: clamp(14px, 3vh, 28px); }
